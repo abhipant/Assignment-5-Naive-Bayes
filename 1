@@ -1,0 +1,80 @@
+Suppose we have a dataset of weather conditions and the corresponding target variable "Play". So using this dataset we need to decide whether we should play or not on a particular day according to the weather conditions. So to solve this problem, we need to follow the below steps:
+
+
+
+Convert the given dataset into frequency tables.
+Generate a Likelihood table by finding the probabilities of given features.
+Now, use the Bayes theorem to calculate the posterior probability.
+
+1.Data Preprocessing:
+
+Load your weather condition dataset, which should include features like "Outlook," "Temperature," "Humidity," and "Wind," as well as the target variable "Play" (e.g., "Yes" or "No").
+
+2. Data Exploration:
+
+Understand the dataset by examining its structure, checking for missing values, and visualizing the data distribution.
+
+3. Data Transformation:
+
+Convert categorical features (Outlook, Temperature, Humidity, Wind) into frequency tables or dictionaries that count the occurrences of each category.
+
+4. Calculate Prior Probabilities:
+
+Calculate the prior probabilities for each class ("Play" = "Yes" and "Play" = "No"). This involves counting the number of instances for each class and dividing by the total number of instances.
+
+5. Calculate Likelihood Probabilities:
+
+Calculate the likelihood probabilities for each feature and each class. For categorical features, you can calculate the conditional probabilities P(Feature|Class) based on the counts in the frequency tables.
+
+6. Predict New Instances:
+
+Given a set of weather conditions, you can calculate the posterior probability for each class using Bayes' theorem and choose the class with the highest probability as the predicted class.
+
+
+
+code----------------->>>>>
+
+
+import pandas as pd
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+
+# Load your dataset
+data = pd.read_csv('weather_data.csv')  # Replace with your dataset
+
+# Encode categorical features (Outlook, Temperature, Humidity, Wind)
+le = LabelEncoder()
+data['Outlook'] = le.fit_transform(data['Outlook'])
+data['Temperature'] = le.fit_transform(data['Temperature'])
+data['Humidity'] = le.fit_transform(data['Humidity'])
+data['Wind'] = le.fit_transform(data['Wind'])
+
+# Split data into features and target variable
+X = data[['Outlook', 'Temperature', 'Humidity', 'Wind']]
+y = data['Play']
+
+# Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create a Naive Bayes classifier (Multinomial Naive Bayes)
+clf = MultinomialNB()
+
+# Train the classifier on the training data
+clf.fit(X_train, y_train)
+
+# Predict on test data
+y_pred = clf.predict(X_test)
+
+# Evaluate the model's performance (accuracy, confusion matrix, etc.)
+# You can use sklearn.metrics for evaluation
+
+# Predict new instances using clf.predict()
+new_data = pd.DataFrame({'Outlook': ['Sunny'], 'Temperature': ['Cool'], 'Humidity': ['High'], 'Wind': ['Weak']})
+new_data['Outlook'] = le.transform(new_data['Outlook'])
+new_data['Temperature'] = le.transform(new_data['Temperature'])
+new_data['Humidity'] = le.transform(new_data['Humidity'])
+new_data['Wind'] = le.transform(new_data['Wind'])
+prediction = clf.predict(new_data)
+
+print("Predicted Play:", prediction)
